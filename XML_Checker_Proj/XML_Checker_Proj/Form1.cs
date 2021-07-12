@@ -27,7 +27,7 @@ namespace XML_Checker_Proj
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            textBox1.Text = "";
         }
 
         /* Button1_XML_Import_New_File */
@@ -89,7 +89,9 @@ namespace XML_Checker_Proj
         /* Button3_Check_Errors  */
         private void button2_Click(object sender, EventArgs e)
         {
-            xml_file.Parse_XML(); 
+            xml_file.Parse_XML();
+            string errorText = xml_file.errorLine;
+            textBox1.Text = errorText;
             Console.WriteLine(xml_file.root_tags.Count);
             //readxml.parsing_file();
             xml_file.print();
@@ -116,7 +118,8 @@ namespace XML_Checker_Proj
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
         {
-
+            
+            
         }
         /* Button4_Correct_Errors */
         //

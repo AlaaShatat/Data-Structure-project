@@ -17,11 +17,15 @@ namespace xml_read
        public string TagValue;
        public bool isClosed;
        public List<Tag> Childs = new List<Tag>();
-       public string attributes ;
+       public string attributes;
+       //public List<TagAttribute> Attributes = new List<TagAttribute>();
+
        public Tag(string name, Tag parent=null ) 
        {
            TagName = name;
-           Parent = parent; 
+           Parent = parent;
+           attributes = null;
+           TagValue = "";
        }
 
        public Tag()
@@ -29,6 +33,7 @@ namespace xml_read
             TagValue = null;
             attributes = null ;
            // TODO: Complete member initialization
+           TagValue = "";
        }
 
 
