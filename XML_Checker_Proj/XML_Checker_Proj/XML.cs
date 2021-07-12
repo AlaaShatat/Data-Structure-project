@@ -100,6 +100,10 @@ namespace xml_read
 
                 }
                     // closing tag 
+                }             
+
+
+            
                 else if (currentRead == '<' && rdr.Peek() == '/') {
                     rdr.Read();
                     string tag_name = "";
@@ -143,13 +147,131 @@ namespace xml_read
        {
            // Format the XML and retun a string with XML formated.
            String result = "";
+           for (int j = 0; j <  root_tags.Count; j++)
+           {    if (root_tags[j].attributes == null)
+                result +="<"+ root_tags[j].TagName +">"+Environment.NewLine;   
+                else 
+                result +="<"+ root_tags[j].TagName +" "+ root_tags[j].attributes +">"+Environment.NewLine;
 
-           return "Formatted XML";
+                formating_childs(root_tags[j]);
+                 result +="</"+ root_tags[j].TagName +">"+Environment.NewLine;
+           }
+       
+        void formating_childs(Tag mytag)
+        {
+             
+                if (mytag.Childs.Count != 0)
+                {
+                    for (int j = 0; j < mytag.Childs.Count; j++)
+                    {
+                        result +="      ";
+                         if (mytag.attributes == null)
+                          result +="<"+ mytag.TagName + ">" + Environment.NewLine;
+                         else 
+                          result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
+                        
+                        formating_childs(mytag.Childs[j]);
+                       
+                        result +="      ";
+                        result +="</"+ mytag.TagName + ">" + Environment.NewLine;
+                    }
+              
+                }
+                  
+                if (mytag.TagValue != null)
+
+                {
+                      result +="      ";
+                         if (mytag.attributes == null)
+                          result +="<"+ mytag.TagName + ">" + Environment.NewLine;
+                         else 
+                          result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
+                        
+                    result +="      "+ mytag.TagValue + Environment.NewLine;
+
+                      result +="      ";
+                        result +="</"+ mytag.TagName + ">" + Environment.NewLine;
+
+                }
+
+
+
+        }
+       
+        
+        using (FileStream fs = File.Create(path))     
+        {
+                   byte[] info = new UTF8Encoding(true).GetBytes(result);
+                    fs.Write(info, 0, info.Length);
+        }
+           return result;
        }
 
        public string ConvertToJson() {
            // Use list of root_tags to convert the xml to Json and return a string.
-           return "Json";
+           String result = "";
+
+           for (int j = 0; j <  root_tags.Count; j++)
+           {
+                if (root_tags[j].attributes == null)
+                result +=" \" " + root_tags[j].TagName + " \" "+Environment.NewLine;   
+                else 
+                result +="<"+ root_tags[j].TagName +" "+ root_tags[j].attributes +">"+Environment.NewLine;
+
+                formating_childs(root_tags[j]);
+                 result +="</"+ root_tags[j].TagName +">"+Environment.NewLine;
+           }
+       
+        void formating_childs(Tag mytag)
+        {
+             
+                if (mytag.Childs.Count != 0)
+                {
+                    for (int j = 0; j < mytag.Childs.Count; j++)
+                    {
+                        result +="      ";
+                         if (mytag.attributes == null)
+                          result +="<"+ mytag.TagName + ">" + Environment.NewLine;
+                         else 
+                          result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
+                        
+                        formating_childs(mytag.Childs[j]);
+                       
+                        result +="      ";
+                        result +="</"+ mytag.TagName + ">" + Environment.NewLine;
+                    }
+              
+                }
+                  
+                if (mytag.TagValue != null)
+
+                {
+                      result +="      ";
+                         if (mytag.attributes == null)
+                          result +="<"+ mytag.TagName + ">" + Environment.NewLine;
+                         else 
+                          result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
+                        
+                    result +="      "+ mytag.TagValue + Environment.NewLine;
+
+                      result +="      ";
+                        result +="</"+ mytag.TagName + ">" + Environment.NewLine;
+
+                }
+
+
+
+        }
+       
+        
+        using (FileStream fs = File.Create(path))     
+        {
+                   byte[] info = new UTF8Encoding(true).GetBytes(result);
+                    fs.Write(info, 0, info.Length);
+        }
+     
+            return result;
+     
        }
 
        public string Trim()

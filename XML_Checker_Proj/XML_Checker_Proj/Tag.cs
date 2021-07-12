@@ -29,6 +29,8 @@ namespace xml_read
 
        public Tag()
        {
+            TagValue = null;
+            attributes = null ;
            // TODO: Complete member initialization
            TagValue = "";
            attributes = null;
