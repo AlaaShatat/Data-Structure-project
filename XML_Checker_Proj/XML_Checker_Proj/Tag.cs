@@ -17,7 +17,7 @@ namespace xml_read
        public string TagValue;
        public bool isClosed;
        public List<Tag> Childs = new List<Tag>();
-       public List<TagAttribute> Attributes = new List<TagAttribute>();
+       public string attributes ;
        public Tag(string name, Tag parent=null ) 
        {
            TagName = name;
@@ -26,6 +26,8 @@ namespace xml_read
 
        public Tag()
        {
+            TagValue = null;
+            attributes = null ;
            // TODO: Complete member initialization
        }
 
