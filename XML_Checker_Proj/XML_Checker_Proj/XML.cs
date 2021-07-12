@@ -19,6 +19,7 @@ namespace xml_read
         public Stack<Tag> validationStack = new Stack<Tag>();
         public TextBox currentError = new TextBox();
         public string errorLine;
+        public string correctResult = "";
 
         // constructor
        public XML (string path_)
@@ -81,8 +82,23 @@ namespace xml_read
                     // attributes
                     currentNode.attributes = tag_attribute;
                     validationStack.Push(currentNode);
+                    correctResult+= "<" + tag_name + tag_attribute + ">"+  Environment.NewLine ;
+                    Console.WriteLine(correctResult);
                 }
-               
+                    // tag value 
+                else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
+                {
+                    string tag_value = "" + Convert.ToChar(currentRead);
+                    while (rdr.Peek() != '<')
+                    {
+                        tag_value += Convert.ToChar(rdr.Read());
+                    }
+                    //Console.WriteLine(tag_value + " tag value  has been detected ");
+                    currentNode.TagValue = tag_value;
+                    correctResult += tag_value + (tag_value !="" ? Environment.NewLine:"");
+                    Console.WriteLine(correctResult);
+
+                }
                     // closing tag 
                 else if (currentRead == '<' && rdr.Peek() == '/') {
                     rdr.Read();
@@ -93,12 +109,15 @@ namespace xml_read
                         columnNumber++;
                     }
                     rdr.Read();
-                    if (tag_name != validationStack.Peek().TagName) {
-                        Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
+                    if (tag_name != validationStack.Peek().TagName) 
+                    {
+                        //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
                          errorLine = "Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber;
                         //currentError.Text = errorLine;
 
                     }
+                    correctResult += "</" + validationStack.Peek() + ">";
+                    Console.WriteLine(correctResult);
                     Tag poped_node = validationStack.Pop();                 
                     //Root Node if empty stack. 
                     if (validationStack.Count == 0)
@@ -113,16 +132,8 @@ namespace xml_read
                     //Console.WriteLine(tag_name + " tag >  has been detected ");
                 }
 
-                else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
-                {
-                    string tag_value = ""+Convert.ToChar(currentRead);
-                    while (rdr.Peek() != '<')
-                    {
-                       tag_value += Convert.ToChar(rdr.Read());
-                    }
-                    //Console.WriteLine(tag_value + " tag value  has been detected ");
-                    currentNode.TagValue = tag_value;
-                }
+               
+
             }
         }
     }
