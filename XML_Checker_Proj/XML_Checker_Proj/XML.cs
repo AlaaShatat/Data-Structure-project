@@ -1,0 +1,146 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace xml_read
+{
+    class XML
+    {
+        // each xml file has list of xml Tag and each Tag has list of Childs Tags 
+        public string path;
+        public List <Tag> root_tags = new List<Tag>();
+        public Stack <string> st1 = new Stack<string>();
+        public Stack<Tag> validationStack = new Stack<Tag>();
+
+        // constructor
+       public XML (string path_)
+        {
+            path = path_;
+        }
+
+
+        // Parse XML and load the data into class properties
+       public void Parse_XML()
+       {
+         int lineNumber = 1 ;
+         int columnNumber = 0 ;
+         FileStream _inputStream = new FileStream(this.path, FileMode.Open, FileAccess.Read);
+         using (StreamReader rdr = new StreamReader(_inputStream))
+        {            
+            int currentRead;
+            Tag currentParent = null;
+            Tag currentNode = null;
+            
+            while ((currentRead = rdr.Read()) >= 0)
+            {
+                char currentChar = Convert.ToChar(currentRead);
+                columnNumber++;
+                if (currentChar == '\n')
+                {
+                    lineNumber++;
+                    //Console.WriteLine("Line " + lineNumber + " " + columnNumber);
+                    columnNumber = 0;
+                }
+                // Xml Version line
+                if ((currentChar == '<') && (rdr.Peek() == '?'))
+                {
+                    rdr.ReadLine();
+                }
+                // Tag Detection  
+                if (currentRead == '<' &&  rdr.Peek() != '/')
+                {
+                    string tag_name = "";
+                    while (rdr.Peek() != '>')
+                    {
+                        tag_name += Convert.ToChar(rdr.Read());
+                        columnNumber++;
+                    }
+                    rdr.Read();
+                    
+                    currentNode = new Tag(tag_name,currentParent);
+                    validationStack.Push(currentNode);
+                }             
+                else if (currentRead == '<' && rdr.Peek() == '/') {
+                    rdr.Read();
+                    string tag_name = "";
+                    while (rdr.Peek() != '>')
+                    {
+                        tag_name += Convert.ToChar(rdr.Read());
+                        columnNumber++;
+                    }
+                    if (tag_name != validationStack.Peek().TagName) {
+                        Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
+                    }
+                    Tag poped_node = validationStack.Pop();                 
+                    //Root Node if empty stack. 
+                    if (validationStack.Count == 0)
+                    {
+                        this.root_tags.Add(poped_node);
+                    }
+                    else {
+                        Tag lastOpenedNode = validationStack.Peek();
+                        lastOpenedNode.Childs.Add(poped_node);
+                    }
+                    // child to some parent 
+                    //Console.WriteLine(tag_name + " tag >  has been detected ");
+                }
+            }
+        }
+    }
+
+
+       public string FormatXML()
+       {
+           // Format the XML and retun a string with XML formated.
+           String result = "";
+
+           return "Formatted XML";
+       }
+
+       public string ConvertToJson() {
+           // Use list of root_tags to convert the xml to Json and return a string.
+           return "Json";
+       }
+
+       public string Trim()
+       {
+           // Pt5 remove the sapacs and the new lines from the xml and retrun a string with no new line or space.
+           string XmlDoc = File.ReadAllText(path);
+            XmlDoc.Trim();
+           string[] charactersToReplace = new string[] { @"\t", @"\n", @"\r", " ", @"\r\n" ,Environment.NewLine};
+           foreach (string s in charactersToReplace)
+           {
+               XmlDoc = XmlDoc.Replace(s, "");
+           }
+           return XmlDoc;
+       }
+
+       public void SaveXMLTrimmed(string filepath_)
+       {
+           // Save the current XML into a another file but trimmed. use the Trim function in this class
+           String trimmed = this.Trim();
+
+           // save to a file at the filepath_
+           ;
+       }
+
+        // print result
+        public void print ()
+        {
+            for (int i = 0; i < root_tags.Count(); i++ )
+            {
+                Console.WriteLine("the current Tag is: " + root_tags[i].TagName);
+                for (int j = 0; j < root_tags[i].Childs.Count(); j++ )
+                {
+                    Console.WriteLine("the current Childs for this parent is: " + root_tags[i].Childs[j].TagName);
+                }
+            }
+        }
+    }
+   
+ 
+}
