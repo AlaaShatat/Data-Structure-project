@@ -17,16 +17,21 @@ namespace xml_read
        public string TagValue;
        public bool isClosed;
        public List<Tag> Childs = new List<Tag>();
-       public List<TagAttribute> Attributes = new List<TagAttribute>();
+       public string attributes;
+       //public List<TagAttribute> Attributes = new List<TagAttribute>();
+
        public Tag(string name, Tag parent=null ) 
        {
            TagName = name;
-           Parent = parent; 
+           Parent = parent;
+           attributes = null;
+           TagValue = "";
        }
 
        public Tag()
        {
            // TODO: Complete member initialization
+           TagValue = "";
        }
 
 

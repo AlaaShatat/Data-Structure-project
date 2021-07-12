@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Data;
+using System.Windows.Forms;
 
 namespace xml_read
 {
@@ -15,6 +17,8 @@ namespace xml_read
         public List <Tag> root_tags = new List<Tag>();
         public Stack <string> st1 = new Stack<string>();
         public Stack<Tag> validationStack = new Stack<Tag>();
+        public TextBox currentError = new TextBox();
+        public string errorLine;
 
         // constructor
        public XML (string path_)
@@ -51,19 +55,35 @@ namespace xml_read
                     rdr.ReadLine();
                 }
                 // Tag Detection  
-                if (currentRead == '<' &&  rdr.Peek() != '/')
+                if (currentRead == '<' && rdr.Peek() != '/')
                 {
                     string tag_name = "";
+                    string tag_attribute = "";
                     while (rdr.Peek() != '>')
-                    {
+                    { // tag name with attributes 
+                        // store tag name
                         tag_name += Convert.ToChar(rdr.Read());
                         columnNumber++;
+
+                        // store tag attribute
+                        if (rdr.Peek() == ' ')
+                        {
+                            while (rdr.Peek() != '>')
+                            {
+                                tag_attribute += Convert.ToChar(rdr.Read());
+                            }
+                        }
                     }
+
                     rdr.Read();
-                    
-                    currentNode = new Tag(tag_name,currentParent);
+
+                    currentNode = new Tag(tag_name, currentParent);
+                    // attributes
+                    currentNode.attributes = tag_attribute;
                     validationStack.Push(currentNode);
-                }             
+                }
+               
+                    // closing tag 
                 else if (currentRead == '<' && rdr.Peek() == '/') {
                     rdr.Read();
                     string tag_name = "";
@@ -72,8 +92,12 @@ namespace xml_read
                         tag_name += Convert.ToChar(rdr.Read());
                         columnNumber++;
                     }
+                    rdr.Read();
                     if (tag_name != validationStack.Peek().TagName) {
                         Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
+                         errorLine = "Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber;
+                        //currentError.Text = errorLine;
+
                     }
                     Tag poped_node = validationStack.Pop();                 
                     //Root Node if empty stack. 
@@ -87,6 +111,17 @@ namespace xml_read
                     }
                     // child to some parent 
                     //Console.WriteLine(tag_name + " tag >  has been detected ");
+                }
+
+                else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
+                {
+                    string tag_value = ""+Convert.ToChar(currentRead);
+                    while (rdr.Peek() != '<')
+                    {
+                       tag_value += Convert.ToChar(rdr.Read());
+                    }
+                    //Console.WriteLine(tag_value + " tag value  has been detected ");
+                    currentNode.TagValue = tag_value;
                 }
             }
         }
