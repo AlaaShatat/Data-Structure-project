@@ -101,8 +101,9 @@ namespace XML_Checker_Proj
         /* Button4_Correct_Errors *///
         private void button3_Click_1(object sender, EventArgs e)
         {
-            xml_file.Parse_XML();
-            string corrected = xml_file.correctResult;
+            //xml_file.Parse_XML();
+            //string corrected = xml_file.correctResult;
+            string corrected = xml_file.correction();
             this.output_txt_box.Text = corrected;
         }
 
@@ -127,8 +128,8 @@ namespace XML_Checker_Proj
         //
         private void format_xml_click(object sender, EventArgs e)
         {
-            string formatted = xml_file.FormatXML();
-            this.output_txt_box.Text = formatted;
+            //string formatted = xml_file.FormatXML();
+            //this.output_txt_box.Text = formatted;
 
         }
    

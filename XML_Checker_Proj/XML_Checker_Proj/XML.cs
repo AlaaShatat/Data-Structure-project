@@ -28,122 +28,120 @@ namespace xml_read
         }
 
 
-        // Parse XML and load the data into class properties
+        // Parse XML and load the data into class properties (finished)
        public void Parse_XML()
        {
-         int lineNumber = 1 ;
-         int columnNumber = 0 ;
-         FileStream _inputStream = new FileStream(this.path, FileMode.Open, FileAccess.Read);
-         using (StreamReader rdr = new StreamReader(_inputStream))
-        {            
-            int currentRead;
-            Tag currentParent = null;
-            Tag currentNode = null;
-            
-            while ((currentRead = rdr.Read()) >= 0)
-            {
-                char currentChar = Convert.ToChar(currentRead);
-                columnNumber++;
-                if (currentChar == '\n')
-                {
-                    lineNumber++;
-                    //Console.WriteLine("Line " + lineNumber + " " + columnNumber);
-                    columnNumber = 0;
-                }
-                // Xml Version line
-                if ((currentChar == '<') && (rdr.Peek() == '?'))
-                {
-                    rdr.ReadLine();
-                }
-                // Tag Detection  
-                if (currentRead == '<' && rdr.Peek() != '/')
-                {
-                    string tag_name = "";
-                    string tag_attribute = "";
-                    while (rdr.Peek() != '>')
-                    { // tag name with attributes 
-                        // store tag name
-                        tag_name += Convert.ToChar(rdr.Read());
-                        columnNumber++;
+           int lineNumber = 1;
+           int columnNumber = 0;
+           FileStream _inputStream = new FileStream(this.path, FileMode.Open, FileAccess.Read);
+           using (StreamReader rdr = new StreamReader(_inputStream))
+           {
+               int currentRead;
+               Tag currentParent = null;
+               Tag currentNode = null;
 
-                        // store tag attribute
-                        if (rdr.Peek() == ' ')
-                        {
-                            while (rdr.Peek() != '>')
-                            {
-                                tag_attribute += Convert.ToChar(rdr.Read());
-                            }
-                        }
-                    }
+               while ((currentRead = rdr.Read()) >= 0)
+               {
+                   char currentChar = Convert.ToChar(currentRead);
+                   columnNumber++;
+                   if (currentChar == '\n')
+                   {
+                       lineNumber++;
+                       //Console.WriteLine("Line " + lineNumber + " " + columnNumber);
+                       columnNumber = 0;
+                   }
+                   // Xml Version line
+                   if ((currentChar == '<') && (rdr.Peek() == '?'))
+                   {
+                       rdr.ReadLine();
+                   }
+                   // Tag Detection  
+                   if (currentRead == '<' && rdr.Peek() != '/')
+                   {
+                       string tag_name = "";
+                       string tag_attribute = "";
+                       while (rdr.Peek() != '>')
+                       { // tag name with attributes 
+                           // store tag name
+                           tag_name += Convert.ToChar(rdr.Read());
+                           columnNumber++;
 
-                    rdr.Read();
+                           // store tag attribute
+                           if (rdr.Peek() == ' ')
+                           {
+                               while (rdr.Peek() != '>')
+                               {
+                                   tag_attribute += Convert.ToChar(rdr.Read());
+                               }
+                           }
+                       }
 
-                    currentNode = new Tag(tag_name, currentParent);
-                    // attributes
-                    currentNode.attributes = tag_attribute;
-                    validationStack.Push(currentNode);
-                    correctResult+= "<" + tag_name + tag_attribute + ">"+  Environment.NewLine ;
-                    Console.WriteLine(correctResult);
-                }
-                    // tag value 
-                else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
-                {
-                    string tag_value = "" + Convert.ToChar(currentRead);
-                    while (rdr.Peek() != '<')
-                    {
-                        tag_value += Convert.ToChar(rdr.Read());
-                    }
-                    //Console.WriteLine(tag_value + " tag value  has been detected ");
-                    currentNode.TagValue = tag_value;
-                    correctResult += tag_value + (tag_value !="" ? Environment.NewLine:"");
-                    Console.WriteLine(correctResult);
+                       rdr.Read();
 
-                }
-                    // closing tag 
-                          
+                       currentNode = new Tag(tag_name, currentParent);
+                       // attributes
+                       currentNode.attributes = tag_attribute;
+                       validationStack.Push(currentNode);
+                       correctResult += "<" + tag_name + tag_attribute + ">" + Environment.NewLine;
+                       //Console.WriteLine(correctResult);
+                   }
+                   // tag value 
+                   else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
+                   {
+                       string tag_value = "" + Convert.ToChar(currentRead);
+                       while (rdr.Peek() != '<')
+                       {
+                           tag_value += Convert.ToChar(rdr.Read());
+                       }
+                       //Console.WriteLine(tag_value + " tag value  has been detected ");
+                       currentNode.TagValue = tag_value;
+                       correctResult += tag_value + (tag_value != "" ? Environment.NewLine : "");
+                       //Console.WriteLine(correctResult);
 
+                   }
+                   // closing tag              
+                   else if (currentRead == '<' && rdr.Peek() == '/')
+                   {
+                       rdr.Read();
+                       string tag_name = "";
+                       while (rdr.Peek() != '>')
+                       {
+                           tag_name += Convert.ToChar(rdr.Read());
+                           columnNumber++;
+                       }
+                       rdr.Read();
+                       if (tag_name != validationStack.Peek().TagName)
+                       {
+                           //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
+                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber;
+                           //currentError.Text = errorLine;
 
-            
-                else if (currentRead == '<' && rdr.Peek() == '/') {
-                    rdr.Read();
-                    string tag_name = "";
-                    while (rdr.Peek() != '>')
-                    {
-                        tag_name += Convert.ToChar(rdr.Read());
-                        columnNumber++;
-                    }
-                    rdr.Read();
-                    if (tag_name != validationStack.Peek().TagName) 
-                    {
-                        //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
-                         errorLine = "Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber;
-                        //currentError.Text = errorLine;
-
-                    }
-                    correctResult += "</" + validationStack.Peek() + ">";
-                    Console.WriteLine(correctResult);
-                    Tag poped_node = validationStack.Pop();                 
-                    //Root Node if empty stack. 
-                    if (validationStack.Count == 0)
-                    {
-                        this.root_tags.Add(poped_node);
-                    }
-                    else {
-                        Tag lastOpenedNode = validationStack.Peek();
-                        lastOpenedNode.Childs.Add(poped_node);
-                    }
-                    // child to some parent 
-                    //Console.WriteLine(tag_name + " tag >  has been detected ");
-                }
-
-               
-
-            }
-        }
-    }
+                       }
+                       correctResult += "</" + validationStack.Peek() + ">";
+                       //Console.WriteLine(correctResult);
+                       Tag poped_node = validationStack.Pop();
+                       //Root Node if empty stack. 
+                       if (validationStack.Count == 0)
+                       {
+                           this.root_tags.Add(poped_node);
+                       }
+                       else
+                       {
+                           Tag lastOpenedNode = validationStack.Peek();
+                           lastOpenedNode.Childs.Add(poped_node);
+                       }
+                       // child to some parent 
+                       //Console.WriteLine(tag_name + " tag >  has been detected ");
+                   }
 
 
-       public string FormatXML()
+
+               }
+           }
+       }
+
+       // correct result 
+       public string correction()
        {
            // Format the XML and retun a string with XML formated.
            String result = "";
@@ -238,9 +236,10 @@ namespace xml_read
        
            return result;
        }
-
-       public string ConvertToJson() {
+       public string ConvertToJson()
+       {
          return "result";
+
      
        }
 
