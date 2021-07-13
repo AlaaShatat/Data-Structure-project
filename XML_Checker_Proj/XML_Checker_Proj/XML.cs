@@ -143,99 +143,136 @@ namespace xml_read
        // correct result 
        public string correction()
        {
-           // Format the XML and retun a string with XML formated.
-           String result = "";
-        int levels = 0 ;
-           for (int j = 0; j <  root_tags.Count; j++)
+           string correctedFile = "";
+           int lineNumber = 1;
+           int columnNumber = 0;
+           correctResult = "";
+           FileStream _inputStream = new FileStream(this.path, FileMode.Open, FileAccess.Read);
+           using (StreamReader rdr = new StreamReader(_inputStream))
            {
-              result +="<"+ root_tags[j].TagName +" "+ root_tags[j].attributes +">"+Environment.NewLine;
-                levels = 0;
+               int currentRead;
+               Tag currentParent = null;
+               Tag currentNode = null;
 
-                formating_childs(root_tags[j]);  
-              
-                result +="</"+ root_tags[j].TagName + ">" + Environment.NewLine;
-           }
-       
-        void formating_childs(Tag mytag )
-        {
-             for(int u =0 ;u < levels ; u++)
-                result +="      ";
-              if(levels != 0)
-                result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
-          
-                if (mytag.Childs.Count != 0)
-                {
-                    levels ++ ;
-
-                    for (int j = 0; j < mytag.Childs.Count; j++)
-                    {
-                        
-                        formating_childs(mytag.Childs[j] );
-                    }
-                   
-                     levels -- ;
-                    for(int u =0 ;u < levels ; u++)
-                         result +="      ";
-                  
-                  if(levels != 0)
-                     result +="</"+ mytag.TagName + ">" + Environment.NewLine;   
-                         
-                     
-                }
-                  
-              else if (mytag.TagValue != null)
+               while ((currentRead = rdr.Read()) >= 0)
                {
-                    string spaces = null ;
-                     for(int u =0 ;u < levels + 1 ; u++)
-                        { //result +="      ";
-                        spaces+="      ";
-                        }
-                      
-                        int position = 0 ; 
-                        string temp = null ;   
-                        string temp2 = null ;
-                        int y = 0 ;
-                        position = mytag.TagValue.IndexOf(Environment.NewLine);
-                           while(position != -1)
-                            {
-                               if (y==0)
-                            {
-                            position = mytag.TagValue.IndexOf(Environment.NewLine);
-                            temp = mytag.TagValue.Substring(position + 2);
-                            temp2 = mytag.TagValue.Substring(0,position); 
-                            } 
-                            if(temp == Environment.NewLine)
-                                 result += spaces +mytag.TagValue.Substring(0,position);
-                                 else
-                                 result += spaces + temp2+ Environment.NewLine;
-                                  
-                           position =  temp.IndexOf(Environment.NewLine);
-                           if (position != -1)
+                   char currentChar = Convert.ToChar(currentRead);
+                   columnNumber++;
+                   if (currentChar == '\n')
+                   {
+                       lineNumber++;
+                       //Console.WriteLine("Line " + lineNumber + " " + columnNumber);
+                       columnNumber = 0;
+                       correctedFile += Environment.NewLine;
+                   }
+                   // Xml Version line
+                   if ((currentChar == '<') && (rdr.Peek() == '?'))
+                   {
+                       string xmlLine= rdr.ReadLine();
+                       correctedFile += xmlLine;
+
+                   }
+                   // Tag Detection  
+                   if (currentRead == '<' && rdr.Peek() != '/')
+                   {
+                       correctedFile += "<";
+                       string tag_name = "";
+                       string tag_attribute = "";
+                       while (rdr.Peek() != '>')
+                       { // tag name with attributes 
+                           // store tag name
+                           tag_name += Convert.ToChar(rdr.Read());
+                           columnNumber++;
+
+                           // store tag attribute
+                           if (rdr.Peek() == ' ')
                            {
-                            temp2 = temp.Substring(0,position); 
-                            temp = temp.Substring(position + 2);
+                               while (rdr.Peek() != '>')
+                               {
+                                   tag_attribute += Convert.ToChar(rdr.Read());
+                               }
                            }
-                                  y = 1 ;
+                           
+                       }
+                       rdr.Read();
+                       correctedFile += tag_name + tag_attribute;
+                       correctedFile += ">";
+                      // correctedFile += Environment.NewLine;
+                       currentNode = new Tag(tag_name, currentParent);
+                       // attributes
+                       currentNode.attributes = tag_attribute;
+                       validationStack.Push(currentNode);
+                       correctResult += "<" + tag_name + tag_attribute + ">" + Environment.NewLine;
+                       //Console.WriteLine(correctResult);
+                   }
+                   // tag value 
+                   else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
+                   {
+                       string tag_value = "" + Convert.ToChar(currentRead);
+                       while (rdr.Peek() != '<')
+                       {
+                           tag_value += Convert.ToChar(rdr.Read());
+                           //correctedFile += tag_value ;
+                       }
+                       //Console.WriteLine(tag_value + " tag value  has been detected ");
+                       currentNode.TagValue = tag_value;
+                       correctedFile += tag_value;
+                       correctResult += tag_value + (tag_value != "" ? Environment.NewLine : "");
+                       //Console.WriteLine(correctResult);
+
+                   }
+                   // closing tag              
+                   else if (currentRead == '<' && rdr.Peek() == '/')
+                   {
+                       rdr.Read();
+                       string tag_name = "";
+                       while (rdr.Peek() != '>')
+                       {
+                           tag_name += Convert.ToChar(rdr.Read());
+                           columnNumber++;
+                       }
+                       rdr.Read();
+                       if (tag_name != validationStack.Peek().TagName)
+                       {
+                           
+                           correctedFile += "</" + validationStack.Peek().TagName + ">";
+                           if(rdr.Peek() == 0)
+                           {
+                               correctedFile += "</" + tag_name + ">";
                            }
-                    
-                          if (y==0)
-                         result += spaces + mytag.TagValue + Environment.NewLine;
-                  
-                   
-                    for(int u =0 ;u < levels ; u++)
-                         result +="      ";
-                  if(levels != 0)
-                     result +="</"+ mytag.TagName + ">" + Environment.NewLine; 
-                
-                       
-                }
+                           //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
+                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber;
+                           //currentError.Text = errorLine;
 
-
-
-        }
-       
-           return result;
+                       }
+                       else
+                       {
+                           correctedFile += "</" + tag_name + ">";
+                           Console.WriteLine(correctedFile);
+                       }
+                       Console.WriteLine(correctedFile);
+                       correctResult += "</" + validationStack.Peek().TagName + ">";
+                       //Console.WriteLine(correctResult);
+                       Tag poped_node = validationStack.Pop();
+                       //Root Node if empty stack. 
+                       if (validationStack.Count == 0)
+                       {
+                           this.root_tags.Add(poped_node);
+                       }
+                       else
+                       {
+                           Tag lastOpenedNode = validationStack.Peek();
+                           lastOpenedNode.Childs.Add(poped_node);
+                       }
+                       // child to some parent 
+                       //Console.WriteLine(tag_name + " tag >  has been detected ");
+                   }
+               }
+              
+           }
+           return correctedFile;
        }
+        // jason
        public string ConvertToJson()
        {
          return "result";
