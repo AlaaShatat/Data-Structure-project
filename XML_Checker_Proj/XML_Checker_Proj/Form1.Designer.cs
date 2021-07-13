@@ -68,7 +68,7 @@
             // Button2_Remove_XML_file
             // 
             this.Button2_Remove_XML_file.Enabled = false;
-            this.Button2_Remove_XML_file.Location = new System.Drawing.Point(188, 646);
+            this.Button2_Remove_XML_file.Location = new System.Drawing.Point(130, 646);
             this.Button2_Remove_XML_file.Margin = new System.Windows.Forms.Padding(2);
             this.Button2_Remove_XML_file.Name = "Button2_Remove_XML_file";
             this.Button2_Remove_XML_file.Size = new System.Drawing.Size(167, 32);
@@ -104,7 +104,7 @@
             // Button5_Compress
             // 
             this.Button5_Compress.Enabled = false;
-            this.Button5_Compress.Location = new System.Drawing.Point(1161, 646);
+            this.Button5_Compress.Location = new System.Drawing.Point(1156, 646);
             this.Button5_Compress.Margin = new System.Windows.Forms.Padding(2);
             this.Button5_Compress.Name = "Button5_Compress";
             this.Button5_Compress.Size = new System.Drawing.Size(167, 32);
@@ -139,7 +139,7 @@
             // 
             // Button1_Import_XML_file
             // 
-            this.Button1_Import_XML_file.Location = new System.Drawing.Point(-5, 646);
+            this.Button1_Import_XML_file.Location = new System.Drawing.Point(27, 762);
             this.Button1_Import_XML_file.Margin = new System.Windows.Forms.Padding(2);
             this.Button1_Import_XML_file.Name = "Button1_Import_XML_file";
             this.Button1_Import_XML_file.Size = new System.Drawing.Size(167, 32);
@@ -181,7 +181,7 @@
             this.output_txt_box.Multiline = true;
             this.output_txt_box.Name = "output_txt_box";
             this.output_txt_box.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.output_txt_box.Size = new System.Drawing.Size(480, 410);
+            this.output_txt_box.Size = new System.Drawing.Size(447, 349);
             this.output_txt_box.TabIndex = 4;
             this.output_txt_box.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
@@ -217,7 +217,7 @@
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(844, 466);
+            this.button2.Location = new System.Drawing.Point(749, 419);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(167, 32);
@@ -241,7 +241,7 @@
             // parse_xml_button
             // 
             this.parse_xml_button.Enabled = false;
-            this.parse_xml_button.Location = new System.Drawing.Point(368, 646);
+            this.parse_xml_button.Location = new System.Drawing.Point(318, 646);
             this.parse_xml_button.Margin = new System.Windows.Forms.Padding(2);
             this.parse_xml_button.Name = "parse_xml_button";
             this.parse_xml_button.Size = new System.Drawing.Size(167, 32);
@@ -253,7 +253,7 @@
             // format_xml_button
             // 
             this.format_xml_button.Enabled = false;
-            this.format_xml_button.Location = new System.Drawing.Point(551, 646);
+            this.format_xml_button.Location = new System.Drawing.Point(503, 646);
             this.format_xml_button.Margin = new System.Windows.Forms.Padding(2);
             this.format_xml_button.Name = "format_xml_button";
             this.format_xml_button.Size = new System.Drawing.Size(167, 32);

@@ -24,7 +24,6 @@ namespace xml_read
        {
            TagName = name;
            Parent = parent;
-           attributes = null;
            TagValue = "";
        }
 
@@ -34,6 +33,7 @@ namespace xml_read
             attributes = null ;
            // TODO: Complete member initialization
            TagValue = "";
+           attributes = null;
        }
 
 
