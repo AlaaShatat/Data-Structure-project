@@ -272,6 +272,105 @@ namespace xml_read
            }
            return correctedFile;
        }
+    
+        //format
+        public string FormatXML()
+        {
+             // Format the XML and retun a string with XML formated.
+            String result = "";
+            int levels = 0 ;
+           for (int j = 0; j <  root_tags.Count; j++)
+           {
+              result +="<"+ root_tags[j].TagName +" "+ root_tags[j].attributes +">"+Environment.NewLine;
+                levels = 0;
+
+                formating_childs(root_tags[j]);  
+              
+                result +="</"+ root_tags[j].TagName + ">" + Environment.NewLine;
+           }
+       
+        void formating_childs(Tag mytag )
+        {
+             for(int u =0 ;u < levels ; u++)
+                result +="      ";
+              if(levels != 0)
+                result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
+          
+                if (mytag.Childs.Count != 0)
+                {
+                    levels ++ ;
+
+                    for (int j = 0; j < mytag.Childs.Count; j++)
+                    {
+                        
+                        formating_childs(mytag.Childs[j] );
+                    }
+                   
+                     levels -- ;
+                    for(int u =0 ;u < levels ; u++)
+                         result +="      ";
+                  
+                  if(levels != 0)
+                     result +="</"+ mytag.TagName + ">" + Environment.NewLine;   
+                         
+                     
+                }
+                  
+              else if (mytag.TagValue != null)
+               {
+                    string spaces = null ;
+                     for(int u =0 ;u < levels + 1 ; u++)
+                        { //result +="      ";
+                        spaces+="      ";
+                        }
+                      
+                        int position = 0 ; 
+                        string temp = null ;   
+                        string temp2 = null ;
+                        int y = 0 ;
+                        position = mytag.TagValue.IndexOf(Environment.NewLine);
+                           while(position != -1)
+                            {
+                               if (y==0)
+                            {
+                            position = mytag.TagValue.IndexOf(Environment.NewLine);
+                            temp = mytag.TagValue.Substring(position + 2);
+                            temp2 = mytag.TagValue.Substring(0,position); 
+                            } 
+                            if(temp == Environment.NewLine)
+                                 result += spaces +mytag.TagValue.Substring(0,position);
+                                 else
+                                 result += spaces + temp2+ Environment.NewLine;
+                                  
+                           position =  temp.IndexOf(Environment.NewLine);
+                           if (position != -1)
+                           {
+                            temp2 = temp.Substring(0,position); 
+                            temp = temp.Substring(position + 2);
+                           }
+                                  y = 1 ;
+                           }
+                    
+                          if (y==0)
+                         result += spaces + mytag.TagValue + Environment.NewLine;
+                  
+                   
+                    for(int u =0 ;u < levels ; u++)
+                         result +="      ";
+                  if(levels != 0)
+                     result +="</"+ mytag.TagName + ">" + Environment.NewLine; 
+                
+                       
+                }
+
+
+
+        }
+       
+           return result;
+            }
+        
+        
         // jason
        public string ConvertToJson()
        {

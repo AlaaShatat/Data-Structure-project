@@ -128,8 +128,8 @@ namespace XML_Checker_Proj
         //
         private void format_xml_click(object sender, EventArgs e)
         {
-            //string formatted = xml_file.FormatXML();
-            //this.output_txt_box.Text = formatted;
+            string formatted = xml_file.FormatXML();
+            this.output_txt_box.Text = formatted;
 
         }
    
