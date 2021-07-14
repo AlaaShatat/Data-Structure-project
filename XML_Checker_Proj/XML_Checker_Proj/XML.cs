@@ -147,6 +147,8 @@ namespace xml_read
            int lineNumber = 1;
            int columnNumber = 0;
            correctResult = "";
+           List <string> lastused = new List<string>();
+           string tagValueCopy = "";
            FileStream _inputStream = new FileStream(this.path, FileMode.Open, FileAccess.Read);
            using (StreamReader rdr = new StreamReader(_inputStream))
            {
@@ -175,12 +177,24 @@ namespace xml_read
                    // Tag Detection  
                    if (currentRead == '<' && rdr.Peek() != '/')
                    {
+                       int len = lastused.Count;
+                       if (validationStack.Count !=0 && validationStack.Peek().TagValue != "" && lastused[len - 1] != "</")
+                       {
+                           correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
+                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                       } 
                        correctedFile += "<";
                        string tag_name = "";
                        string tag_attribute = "";
                        while (rdr.Peek() != '>')
                        { // tag name with attributes 
                            // store tag name
+                           // check errors for tag name
+                           while (rdr.Peek() == '<')
+                           {
+                               rdr.Read();
+                           }
+                           //if ()
                            tag_name += Convert.ToChar(rdr.Read());
                            columnNumber++;
 
@@ -197,6 +211,7 @@ namespace xml_read
                        rdr.Read();
                        correctedFile += tag_name + tag_attribute;
                        correctedFile += ">";
+                       lastused.Add("<");
                       // correctedFile += Environment.NewLine;
                        currentNode = new Tag(tag_name, currentParent);
                        // attributes
@@ -218,12 +233,14 @@ namespace xml_read
                        currentNode.TagValue = tag_value;
                        correctedFile += tag_value;
                        correctResult += tag_value + (tag_value != "" ? Environment.NewLine : "");
+                       tagValueCopy = tag_value;
                        //Console.WriteLine(correctResult);
 
                    }
                    // closing tag              
                    else if (currentRead == '<' && rdr.Peek() == '/')
                    {
+                       lastused.Add("</");
                        rdr.Read();
                        string tag_name = "";
                        while (rdr.Peek() != '>')
@@ -232,18 +249,19 @@ namespace xml_read
                            columnNumber++;
                        }
                        rdr.Read();
+                       // error correction
+                       if (validationStack.Count == 0) 
+                       {
+                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                       }
                        if (tag_name != validationStack.Peek().TagName)
                        {
-                           
-                           correctedFile += "</" + validationStack.Peek().TagName + ">";
-                           if(rdr.Peek() == 0)
-                           {
-                               correctedFile += "</" + tag_name + ">";
-                           }
+                           // in case of missing values 
+                           correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
+                           correctedFile += "</" + tag_name + ">";
                            //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
-                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber;
+                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
                            //currentError.Text = errorLine;
-
                        }
                        else
                        {
@@ -267,111 +285,13 @@ namespace xml_read
                        // child to some parent 
                        //Console.WriteLine(tag_name + " tag >  has been detected ");
                    }
+                   
                }
               
            }
            return correctedFile;
        }
     
-        //format
-        public string FormatXML()
-        {
-             // Format the XML and retun a string with XML formated.
-            String result = "";
-            int levels = 0 ;
-           for (int j = 0; j <  root_tags.Count; j++)
-           {
-              result +="<"+ root_tags[j].TagName +" "+ root_tags[j].attributes +">"+Environment.NewLine;
-                levels = 0;
-
-                formating_childs(root_tags[j]);  
-              
-                result +="</"+ root_tags[j].TagName + ">" + Environment.NewLine;
-           }
-       
-        void formating_childs(Tag mytag )
-        {
-             for(int u =0 ;u < levels ; u++)
-                result +="      ";
-              if(levels != 0)
-                result +="<"+ mytag.TagName +" "+ mytag.attributes +">"+Environment.NewLine;
-          
-                if (mytag.Childs.Count != 0)
-                {
-                    levels ++ ;
-
-                    for (int j = 0; j < mytag.Childs.Count; j++)
-                    {
-                        
-                        formating_childs(mytag.Childs[j] );
-                    }
-                   
-                     levels -- ;
-                    for(int u =0 ;u < levels ; u++)
-                         result +="      ";
-                  
-                  if(levels != 0)
-                     result +="</"+ mytag.TagName + ">" + Environment.NewLine;   
-                         
-                     
-                }
-                  
-              else if (mytag.TagValue != null)
-               {
-                    string spaces = null ;
-                     for(int u =0 ;u < levels + 1 ; u++)
-                        { //result +="      ";
-                        spaces+="      ";
-                        }
-                      
-                        int position = 0 ; 
-                        string temp = null ;   
-                        string temp2 = null ;
-                        int y = 0 ;
-                        position = mytag.TagValue.IndexOf(Environment.NewLine);
-                           while(position != -1)
-                            {
-                               if (y==0)
-                            {
-                            position = mytag.TagValue.IndexOf(Environment.NewLine);
-                            temp = mytag.TagValue.Substring(position + 2);
-                            temp2 = mytag.TagValue.Substring(0,position); 
-                            } 
-                            if(temp == Environment.NewLine)
-                                 result += spaces +mytag.TagValue.Substring(0,position);
-                                 else
-                                 result += spaces + temp2+ Environment.NewLine;
-                                  
-                           position =  temp.IndexOf(Environment.NewLine);
-                           if (position != -1)
-                           {
-                            temp2 = temp.Substring(0,position); 
-                            temp = temp.Substring(position + 2);
-                           }
-                                  y = 1 ;
-                           }
-                    
-                          if (y==0)
-                         result += spaces + mytag.TagValue + Environment.NewLine;
-                  
-                   
-                    for(int u =0 ;u < levels ; u++)
-                         result +="      ";
-                  if(levels != 0)
-                     result +="</"+ mytag.TagName + ">" + Environment.NewLine; 
-                
-                       
-                }
-
-
-
-        }
-       
-           return result;
-            }
-        
-        
-        // jason
        public string ConvertToJson()
        {
          return "result";
