@@ -328,6 +328,7 @@ namespace xml_read
         public  string Compress(string filepath, List<List<int>> codeIndex, List<string> dictionary,int* no_of_loines)
         {
             dictionary.Clear();
+            codeIndex.Clear();
             List<string> lines = File.ReadAllLines(filepath).ToList();
 
             *no_of_lines = 0;
