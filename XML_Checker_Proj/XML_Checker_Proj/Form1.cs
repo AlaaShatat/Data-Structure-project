@@ -114,6 +114,11 @@ namespace XML_Checker_Proj
         /* Button5_Compress */
         private void button4_Click_1(object sender, EventArgs e)
         {
+            ////////////// For Compress & Decompress
+            List<List<int>> compress_indexes = new List<List<int>>();
+            List<string> dictionary = new List<string>();
+            int no_of_lines;
+            /////////////
             string compressed = xml_file.Trim();
             this.output_txt_box.Text = compressed;
         }
