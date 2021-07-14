@@ -104,6 +104,10 @@ namespace XML_Checker_Proj
             //xml_file.Parse_XML();
             //string corrected = xml_file.correctResult;
             string corrected = xml_file.correction();
+            string errorText = xml_file.errorLine;
+            textBox1.Text = errorText;
+            
+
             this.output_txt_box.Text = corrected;
         }
 
