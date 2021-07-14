@@ -82,7 +82,7 @@
             // Button3_Check_Errors
             // 
             this.Button3_Check_Errors.Enabled = false;
-            this.Button3_Check_Errors.Location = new System.Drawing.Point(385, 662);
+            this.Button3_Check_Errors.Location = new System.Drawing.Point(380, 626);
             this.Button3_Check_Errors.Margin = new System.Windows.Forms.Padding(2);
             this.Button3_Check_Errors.Name = "Button3_Check_Errors";
             this.Button3_Check_Errors.Size = new System.Drawing.Size(167, 32);
@@ -94,7 +94,7 @@
             // Button4_Correct_Errors
             // 
             this.Button4_Correct_Errors.Enabled = false;
-            this.Button4_Correct_Errors.Location = new System.Drawing.Point(385, 626);
+            this.Button4_Correct_Errors.Location = new System.Drawing.Point(380, 662);
             this.Button4_Correct_Errors.Margin = new System.Windows.Forms.Padding(2);
             this.Button4_Correct_Errors.Name = "Button4_Correct_Errors";
             this.Button4_Correct_Errors.Size = new System.Drawing.Size(167, 32);
