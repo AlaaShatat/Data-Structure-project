@@ -320,6 +320,11 @@ namespace xml_read
            // save to a file at the filepath_
            ;
        }
+          public int IsInTable(List<string> dictionary, string searchList)
+        {
+            int index = dictionary.IndexOf(searchList);
+            return index;
+        }
         public  string Compress(string filepath, List<List<int>> codeIndex, List<string> dictionary,int* no_of_loines)
         {
             dictionary.Clear();
@@ -399,6 +404,7 @@ namespace xml_read
             return After_compression;
                 
         }
+      
          public static string Decompress(List<List<int>> compress_indexes, List<string> dictionary, int no_of_lines)
         {
 
