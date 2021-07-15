@@ -94,7 +94,7 @@ namespace XML_Checker_Proj
         /* Button3_Check_Errors  */
         private void button2_Click(object sender, EventArgs e)
         {
-            xml_file.Parse_XML();
+            xml_file.correction();
             string errorText = xml_file.errorLine;
             textBox1.Text = errorText;
             Console.WriteLine(xml_file.root_tags.Count);
@@ -124,8 +124,15 @@ namespace XML_Checker_Proj
             ////////////// For Compress & Decompress
             List<List<int>> compress_indexes = new List<List<int>>();
             List<string> dictionary = new List<string>();
-
-
+            //StreamReader xmlString = new StreamReader(textBox2_XML_Path.Text);
+            //string line ;
+            //string fileRead = "";
+            //while ((line = xmlString.ReadLine()) != null) 
+            //{
+            //    fileRead += line;
+            //}
+            string compressed = xml_file.Compress();
+            this.output_txt_box.Text = compressed;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -140,8 +147,8 @@ namespace XML_Checker_Proj
         //
         private void format_xml_click(object sender, EventArgs e)
         {
-            string formatted = xml_file.FormatXML();
-            this.output_txt_box.Text = formatted;
+            //string formatted = xml_file.FormatXML();
+            this.output_txt_box.Text = "formatted";
 
         }
    
@@ -179,13 +186,14 @@ namespace XML_Checker_Proj
         // minify file 
         private void button3_Click(object sender, EventArgs e)
         {
-            string compressed = xml_file.Trim();
-            this.output_txt_box.Text = compressed;
+            string trimmed = xml_file.Trim();
+            this.output_txt_box.Text = trimmed;
         }
         // decompress
         private void button5_Click(object sender, EventArgs e)
         {
-
+            string decompressed = xml_file.Decompress();
+            this.output_txt_box.Text = decompressed;
         }
 
         private void textBox2_TextChanged_1(object sender, EventArgs e)
