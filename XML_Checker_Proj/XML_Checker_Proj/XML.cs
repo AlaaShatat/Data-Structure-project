@@ -179,6 +179,7 @@ namespace xml_read
                        string xmlLine= "<"+ rdr.ReadLine();
                         correctedFile += xmlLine + Environment.NewLine ;
                         errorString += xmlLine + Environment.NewLine;
+                        lineNumber++;
                     }
                     // Tag Detection  
                     if (currentRead == '<' && rdr.Peek() != '/' )
