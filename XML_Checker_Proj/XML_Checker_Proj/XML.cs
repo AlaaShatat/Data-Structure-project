@@ -18,15 +18,17 @@ namespace xml_read
         public Stack <string> st1 = new Stack<string>();
         public Stack<Tag> validationStack = new Stack<Tag>();
         public TextBox currentError = new TextBox();
-        public string errorLine;
+        public string errorLine ="";
         public string correctResult = "";
         public string result = "";
         public int levels = 0; 
         public int no_of_lines=0;
         public List<List<int>> codeIndex = new List<List<int>>();
         public List<string> dictionary =new List<string>();
+        public string declarationXML = "";
+        public string errorString = "";
         // constructor
-       public XML (string path_)
+        public XML (string path_)
         {
             path = path_;
         }
@@ -43,7 +45,6 @@ namespace xml_read
                int currentRead;
                Tag currentParent = null;
                Tag currentNode = null;
-
                while ((currentRead = rdr.Read()) >= 0)
                {
                    char currentChar = Convert.ToChar(currentRead);
@@ -57,10 +58,10 @@ namespace xml_read
                    // Xml Version line
                    if ((currentChar == '<') && (rdr.Peek() == '?'))
                    {
-                       rdr.ReadLine();
+                       declarationXML = currentChar + rdr.ReadLine() + Environment.NewLine; 
                    }
-                   // Tag Detection  
-                   if (currentRead == '<' && rdr.Peek() != '/')
+                    // Tag Detection  
+                    if (currentRead == '<' && rdr.Peek() != '/')
                    {
                        string tag_name = "";
                        string tag_attribute = "";
@@ -170,22 +171,26 @@ namespace xml_read
                        //Console.WriteLine("Line " + lineNumber + " " + columnNumber);
                        columnNumber = 0;
                        correctedFile += Environment.NewLine;
-                   }
+                        errorString += Environment.NewLine;
+                    }
                    // Xml Version line
                    if ((currentChar == '<') && (rdr.Peek() == '?'))
                    {
-                       string xmlLine= rdr.ReadLine();
-                       correctedFile += xmlLine;
-
-                   }
-                   // Tag Detection  
-                   if (currentRead == '<' && rdr.Peek() != '/')
+                       string xmlLine= "<"+ rdr.ReadLine();
+                        correctedFile += xmlLine + Environment.NewLine ;
+                        errorString += xmlLine + Environment.NewLine;
+                    }
+                    // Tag Detection  
+                    if (currentRead == '<' && rdr.Peek() != '/' )
                    {
                        int len = lastused.Count;
                        if (validationStack.Count !=0 && validationStack.Peek().TagValue != "" && lastused[len - 1] != "</")
                        {
                            correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
-                           errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                           errorString += "ERROR <-----" + Environment.NewLine;
+                            errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                            validationStack.Pop();
+
                        } 
                        correctedFile += "<";
                        string tag_name = "";
@@ -197,7 +202,9 @@ namespace xml_read
                            while (rdr.Peek() == '<')
                            {
                                rdr.Read();
-                           }
+                              // errorLine += "Error: Synatx Error " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                               // errorString += "ERROR <-----" + Environment.NewLine;
+                            }
                            //if ()
                            tag_name += Convert.ToChar(rdr.Read());
                            columnNumber++;
@@ -222,8 +229,9 @@ namespace xml_read
                        currentNode.attributes = tag_attribute;
                        validationStack.Push(currentNode);
                        correctResult += "<" + tag_name + tag_attribute + ">" + Environment.NewLine;
-                       //Console.WriteLine(correctResult);
-                   }
+                        errorString += "<" + tag_name + tag_attribute + ">" ;
+                        //Console.WriteLine(correctResult);
+                    }
                    // tag value 
                    else if (currentRead != '<' && currentRead != '\r' && currentRead != '\n')
                    {
@@ -236,6 +244,7 @@ namespace xml_read
                        //Console.WriteLine(tag_value + " tag value  has been detected ");
                        currentNode.TagValue = tag_value;
                        correctedFile += tag_value;
+                        errorString += tag_value;
                        correctResult += tag_value + (tag_value != "" ? Environment.NewLine : "");
                        tagValueCopy = tag_value;
                        //Console.WriteLine(correctResult);
@@ -257,27 +266,34 @@ namespace xml_read
                        if (validationStack.Count == 0) 
                        {
                            errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
-                       }
+                           errorString += "ERROR <-----" + Environment.NewLine;
+                        }
                        if (tag_name != validationStack.Peek().TagName)
                        {
-                           // in case of missing values 
-                           correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
+                            // in case of missing values 
+                            correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
                            correctedFile += "</" + tag_name + ">";
                            //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
                            errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
-                           //currentError.Text = errorLine;
-                       }
+                            //currentError.Text = errorLine;
+                            errorString += "ERROR <-----" + Environment.NewLine;
+                            errorString += "</" + tag_name + ">";
+                            validationStack.Pop();
+                        }
                        else
                        {
-                           correctedFile += "</" + tag_name + ">";
+                            errorString += "</" + tag_name + ">";
+                            correctedFile += "</" + tag_name + ">";
                            Console.WriteLine(correctedFile);
+
                        }
                        Console.WriteLine(correctedFile);
                        correctResult += "</" + validationStack.Peek().TagName + ">";
                        //Console.WriteLine(correctResult);
                        Tag poped_node = validationStack.Pop();
-                       //Root Node if empty stack. 
-                       if (validationStack.Count == 0)
+                       
+                        //Root Node if empty stack. 
+                        if (validationStack.Count == 0)
                        {
                            this.root_tags.Add(poped_node);
                        }
@@ -300,6 +316,7 @@ namespace xml_read
         {
             // Format the XML and retun a string with XML formated.
             String result = "";
+            result += declarationXML;
             int levels = 0;
 
 

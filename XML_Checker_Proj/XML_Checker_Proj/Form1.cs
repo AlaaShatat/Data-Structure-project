@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using System.Xml;
 using xml_read;
 
@@ -94,9 +95,21 @@ namespace XML_Checker_Proj
         /* Button3_Check_Errors  */
         private void button2_Click(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             xml_file.correction();
             string errorText = xml_file.errorLine;
+            this.output_txt_box.Text = xml_file.errorString;
+            //bool errorCounter = Regex.IsMatch(errorText, @"^[a-zA-Z]+$");
+            //if (errorCounter == 0 ) 
+            //{
+            //    textBox1.Text = "No error has been detected";
+            //}
+            //else 
+            //{
+            //    textBox1.Text = errorText;
+            //}
             textBox1.Text = errorText;
+
             Console.WriteLine(xml_file.root_tags.Count);
             //readxml.parsing_file();
             xml_file.print();
@@ -108,12 +121,13 @@ namespace XML_Checker_Proj
         /* Button4_Correct_Errors *///
         private void button3_Click_1(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             //xml_file.Parse_XML();
             //string corrected = xml_file.correctResult;
             string corrected = xml_file.correction();
             string errorText = xml_file.errorLine;
             textBox1.Text = errorText;
-            
+
 
             this.output_txt_box.Text = corrected;
         }
@@ -121,6 +135,7 @@ namespace XML_Checker_Proj
         /* Button5_Compress */
         private void button4_Click_1(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             ////////////// For Compress & Decompress
             List<List<int>> compress_indexes = new List<List<int>>();
             List<string> dictionary = new List<string>();
@@ -141,12 +156,13 @@ namespace XML_Checker_Proj
         }
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
-        {   
+        {
         }
         /* Button4_Correct_Errors */
         //
         private void format_xml_click(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             xml_file.Parse_XML();
             string formatted = xml_file.FormatXML();
             this.output_txt_box.Text = formatted;
@@ -182,6 +198,7 @@ namespace XML_Checker_Proj
         // jason
         private void button4_Click(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             xml_file.Parse_XML();
             string converted = xml_file.ConvertToJson();
             this.output_txt_box.Text = converted;
@@ -191,12 +208,14 @@ namespace XML_Checker_Proj
         // minify file 
         private void button3_Click(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             string trimmed = xml_file.Trim();
             this.output_txt_box.Text = trimmed;
         }
         // decompress
         private void button5_Click(object sender, EventArgs e)
         {
+            this.output_txt_box.Text = "";
             string decompressed = xml_file.Decompress();
             this.output_txt_box.Text = decompressed;
         }
@@ -219,7 +238,7 @@ namespace XML_Checker_Proj
             //Directory.CreateDirectory(path2+"1");
             SaveFileDialog SaveFileDialog1 = new SaveFileDialog();
             SaveFileDialog1.ShowDialog(); 
-            SaveFileDialog1.InitialDirectory = @"T:\asu\3rd CSE\Second-term\Data structure";
+            SaveFileDialog1.InitialDirectory = @"C:\";
             SaveFileDialog1.Title = "Save text Files";
             SaveFileDialog1.DefaultExt = "txt";
             SaveFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*|XML files (*.xml)|*.xml|JSON files (*.json)|*.json";  
