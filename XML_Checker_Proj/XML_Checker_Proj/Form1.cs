@@ -124,11 +124,12 @@ namespace XML_Checker_Proj
         private void button3_Click_1(object sender, EventArgs e)
         {
             this.output_txt_box.Text = "";
+            textBox1.Text = "";
             //xml_file.Parse_XML();
             //string corrected = xml_file.correctResult;
             string corrected = xml_file.correction();
-            string errorText = xml_file.errorLine;
-            textBox1.Text = errorText;
+            //string errorText = xml_file.errorLine;
+            //textBox1.Text = errorText;
 
 
             this.output_txt_box.Text = corrected;
@@ -159,6 +160,7 @@ namespace XML_Checker_Proj
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
         {
+            textBox1.WordWrap = true;
         }
         /* Button4_Correct_Errors */
         //

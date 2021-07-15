@@ -279,7 +279,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(167, 32);
             this.button4.TabIndex = 15;
-            this.button4.Text = "Convert to Jason";
+            this.button4.Text = "Convert to Json";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -313,9 +313,9 @@
             this.button2.BackColor = System.Drawing.Color.Silver;
             this.button2.Location = new System.Drawing.Point(969, 414);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(135, 23);
             this.button2.TabIndex = 18;
-            this.button2.Text = "Save File";
+            this.button2.Text = "Save File As";
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click_1);
             // 
@@ -324,7 +324,7 @@
             this.AccessibleName = "";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.LightCyan;
+            this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1783, 805);
             this.Controls.Add(this.button2);

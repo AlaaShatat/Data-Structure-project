@@ -316,7 +316,6 @@ namespace xml_read
         {
             // Format the XML and retun a string with XML formated.
             String result = "";
-            result += declarationXML;
             int levels = 0;
 
 
