@@ -87,6 +87,8 @@ namespace XML_Checker_Proj
             textBox2_XML_Path.Enabled = true;
             textBox2_XML_Path.Text = "";
             output_txt_box.Text = "";
+            textBox1.Text = "";
+            output_txt_box.Text = "";
 
 
         }
@@ -227,15 +229,7 @@ namespace XML_Checker_Proj
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            //if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            //{
-            //    outputFileSave.Text = openFileDialog1.FileName;
-            //}
-            //string path1 = textBox2_XML_Path.Text;
-            //string path2 = Path.Combine(path1, "temp1");
-
-            //// Create directory temp1 if it doesn't exist
-            //Directory.CreateDirectory(path2+"1");
+            
             SaveFileDialog SaveFileDialog1 = new SaveFileDialog();
             SaveFileDialog1.ShowDialog(); 
             SaveFileDialog1.InitialDirectory = @"C:\";
