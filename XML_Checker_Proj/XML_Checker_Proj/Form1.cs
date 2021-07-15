@@ -51,10 +51,13 @@ namespace XML_Checker_Proj
                 Button5_Compress.Enabled        = true;
                 parse_xml_button.Enabled = true;
                 format_xml_button.Enabled = true;
-
+                button3.Enabled = true;
+                button4.Enabled = true;
+                button2.Enabled = true;
+                button5.Enabled = true;
 
                 /* Disable tetBox2_XML_Path */
-                textBox2_XML_Path.Enabled = false;
+                textBox2_XML_Path.Enabled = true;
                 xml_file = new XML(path);
             }
 
@@ -82,6 +85,8 @@ namespace XML_Checker_Proj
             /* Enable tetBox2_XML_Path */
             textBox2_XML_Path.Enabled = true;
             textBox2_XML_Path.Text = "";
+            output_txt_box.Text = "";
+
 
         }
 
@@ -95,6 +100,8 @@ namespace XML_Checker_Proj
             Console.WriteLine(xml_file.root_tags.Count);
             //readxml.parsing_file();
             xml_file.print();
+            
+            
         }
 
 
@@ -117,10 +124,8 @@ namespace XML_Checker_Proj
             ////////////// For Compress & Decompress
             List<List<int>> compress_indexes = new List<List<int>>();
             List<string> dictionary = new List<string>();
-            int no_of_lines;
-            /////////////
-            string compressed = xml_file.Trim();
-            this.output_txt_box.Text = compressed;
+
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -129,16 +134,14 @@ namespace XML_Checker_Proj
         }
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
-        {
-            
-            
+        {   
         }
         /* Button4_Correct_Errors */
         //
         private void format_xml_click(object sender, EventArgs e)
         {
-            //string formatted = xml_file.FormatXML();
-            //this.output_txt_box.Text = formatted;
+            string formatted = xml_file.FormatXML();
+            this.output_txt_box.Text = formatted;
 
         }
    
@@ -168,10 +171,54 @@ namespace XML_Checker_Proj
                 textBox2_XML_Path.Text = openFileDialog1.FileName;
             }  
         }
-
+        // jason
         private void button4_Click(object sender, EventArgs e)
         {
             string converted = xml_file.ConvertToJson();
+        }
+        // minify file 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string compressed = xml_file.Trim();
+            this.output_txt_box.Text = compressed;
+        }
+        // decompress
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            //if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            //{
+            //    outputFileSave.Text = openFileDialog1.FileName;
+            //}
+            //string path1 = textBox2_XML_Path.Text;
+            //string path2 = Path.Combine(path1, "temp1");
+
+            //// Create directory temp1 if it doesn't exist
+            //Directory.CreateDirectory(path2+"1");
+            SaveFileDialog SaveFileDialog1 = new SaveFileDialog();
+            SaveFileDialog1.ShowDialog(); 
+            SaveFileDialog1.InitialDirectory = @"T:\asu\3rd CSE\Second-term\Data structure";
+            SaveFileDialog1.Title = "Save text Files";
+            SaveFileDialog1.DefaultExt = "txt";
+            SaveFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*|XML files (*.xml)|*.xml|JSON files (*.json)|*.json";  
+           // saveFileDialog1.CheckFileExists = true;      
+            //saveFileDialog1.CheckPathExists = true;   
+            if (SaveFileDialog1.ShowDialog() == DialogResult.OK)
+            {      
+            outputFileSave.Text = SaveFileDialog1.FileName; 
+                string filePath = outputFileSave.Text;
+                xml_file.storeOutput(filePath, output_txt_box.Text);
+            }
+            
         }
     }
 }

@@ -46,12 +46,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.parse_xml_button = new System.Windows.Forms.Button();
             this.format_xml_button = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.outputFileSave = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1_XML_Contents
@@ -106,7 +108,7 @@
             // Button5_Compress
             // 
             this.Button5_Compress.Enabled = false;
-            this.Button5_Compress.Location = new System.Drawing.Point(1126, 646);
+            this.Button5_Compress.Location = new System.Drawing.Point(1125, 626);
             this.Button5_Compress.Margin = new System.Windows.Forms.Padding(2);
             this.Button5_Compress.Name = "Button5_Compress";
             this.Button5_Compress.Size = new System.Drawing.Size(167, 32);
@@ -119,7 +121,7 @@
             // 
             this.textBox2_XML_Path.BackColor = System.Drawing.Color.Lavender;
             this.textBox2_XML_Path.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.textBox2_XML_Path.Location = new System.Drawing.Point(1036, 27);
+            this.textBox2_XML_Path.Location = new System.Drawing.Point(969, 27);
             this.textBox2_XML_Path.Margin = new System.Windows.Forms.Padding(2);
             this.textBox2_XML_Path.Multiline = true;
             this.textBox2_XML_Path.Name = "textBox2_XML_Path";
@@ -131,7 +133,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Silver;
+            this.label1.BackColor = System.Drawing.Color.DarkGray;
             this.label1.Location = new System.Drawing.Point(30, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
@@ -153,12 +155,13 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1036, 95);
+            this.button1.BackColor = System.Drawing.Color.Silver;
+            this.button1.Location = new System.Drawing.Point(969, 95);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 13;
             this.button1.Text = "Browse";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // openFileDialog1
@@ -168,8 +171,8 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Silver;
-            this.label2.Location = new System.Drawing.Point(1033, 8);
+            this.label2.BackColor = System.Drawing.Color.DarkGray;
+            this.label2.Location = new System.Drawing.Point(966, 8);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 17);
@@ -192,7 +195,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Silver;
+            this.label3.BackColor = System.Drawing.Color.DarkGray;
             this.label3.Location = new System.Drawing.Point(486, 8);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
@@ -219,22 +222,10 @@
             this.textBox1.TabIndex = 4;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
-            // button2
-            // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(771, 451);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(167, 32);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Save File As";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Silver;
+            this.label4.BackColor = System.Drawing.Color.DarkGray;
             this.label4.Location = new System.Drawing.Point(42, 466);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
@@ -277,6 +268,7 @@
             this.button3.TabIndex = 14;
             this.button3.Text = "Minify";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -290,14 +282,53 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // button5
+            // 
+            this.button5.Enabled = false;
+            this.button5.Location = new System.Drawing.Point(1125, 662);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(167, 32);
+            this.button5.TabIndex = 16;
+            this.button5.Text = "De-Compress";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // outputFileSave
+            // 
+            this.outputFileSave.BackColor = System.Drawing.Color.Lavender;
+            this.outputFileSave.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.outputFileSave.Location = new System.Drawing.Point(969, 333);
+            this.outputFileSave.Margin = new System.Windows.Forms.Padding(2);
+            this.outputFileSave.Multiline = true;
+            this.outputFileSave.Name = "outputFileSave";
+            this.outputFileSave.Size = new System.Drawing.Size(176, 63);
+            this.outputFileSave.TabIndex = 17;
+            this.outputFileSave.Text = "output file path";
+            this.outputFileSave.TextChanged += new System.EventHandler(this.textBox2_TextChanged_1);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.Silver;
+            this.button2.Location = new System.Drawing.Point(969, 414);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 18;
+            this.button2.Text = "Save File";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
             // Form1
             // 
             this.AccessibleName = "";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = System.Drawing.Color.DarkSeaGreen;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1783, 805);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.outputFileSave);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
@@ -309,7 +340,6 @@
             this.Controls.Add(this.textBox2_XML_Path);
             this.Controls.Add(this.Button5_Compress);
             this.Controls.Add(this.Button4_Correct_Errors);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.format_xml_button);
             this.Controls.Add(this.parse_xml_button);
             this.Controls.Add(this.Button3_Check_Errors);
@@ -346,12 +376,14 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button parse_xml_button;
         private System.Windows.Forms.Button format_xml_button;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TextBox outputFileSave;
+        private System.Windows.Forms.Button button2;
     }
 }
 

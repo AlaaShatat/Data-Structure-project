@@ -18,6 +18,7 @@ namespace xml_read
        public bool isClosed;
        public List<Tag> Childs = new List<Tag>();
        public string attributes;
+       public int has_sibling = 0;
        //public List<TagAttribute> Attributes = new List<TagAttribute>();
 
        public Tag(string name, Tag parent=null ) 
