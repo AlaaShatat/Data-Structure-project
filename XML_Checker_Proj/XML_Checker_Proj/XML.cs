@@ -20,7 +20,9 @@ namespace xml_read
         public TextBox currentError = new TextBox();
         public string errorLine;
         public string correctResult = "";
-
+        int no_of_lines=0;
+        List<List<int>> codeIndex;
+        List<string> dictionary;
         // constructor
        public XML (string path_)
         {
@@ -320,24 +322,25 @@ namespace xml_read
            // save to a file at the filepath_
            ;
        }
-          public int IsInTable(List<string> dictionary, string searchList)
+          public int IsInTable(string searchList)
         {
             int index = dictionary.IndexOf(searchList);
             return index;
         }
-        public  string Compress(string filepath, List<List<int>> codeIndex, List<string> dictionary,int* no_of_loines)
+
+        public  string Compress(string filepath)
         {
             dictionary.Clear();
             codeIndex.Clear();
             List<string> lines = File.ReadAllLines(filepath).ToList();
 
-            *no_of_lines = 0;
+            no_of_lines = 0;
             foreach (string line in lines)
             {
                 List<int> temp = new List<int>();
                 int i = 0;
                 string c = line[0].ToString();
-                if ((IsInTable(dictionary, c)) == -1)
+                if ((IsInTable(c)) == -1)
                     dictionary.Add(c);
 
                 string n = line[1].ToString();
@@ -349,7 +352,7 @@ namespace xml_read
                     if (i != 0 && c != cn)
                     {
                         c = line[i].ToString();
-                        if ((IsInTable(dictionary, c)) == -1)
+                        if ((IsInTable(c)) == -1)
                             dictionary.Add(c);
                     }
                     if (i + 1 != line.Length)
@@ -357,11 +360,11 @@ namespace xml_read
 
                         n = line[i + 1].ToString();
                         cn = c + n;
-                        if ((copycode = IsInTable(dictionary, cn)) != -1)
+                        if ((copycode = IsInTable(cn)) != -1)
                             c = cn;
                         else
                         {
-                            copycode = IsInTable(dictionary, c);
+                            copycode = IsInTable(c);
                             temp.Add(copycode);
                             dictionary.Add(cn);
                         }
@@ -370,9 +373,9 @@ namespace xml_read
                     }
                     i++;
                 }
-                temp.Add(IsInTable(dictionary, c));
+                temp.Add(IsInTable(c));
 
-                *no_of_lines++;
+                no_of_lines++;
 
                 codeIndex.Add(temp);
                 
@@ -406,7 +409,7 @@ namespace xml_read
                 
         }
       
-         public static string Decompress(List<List<int>> compress_indexes, List<string> dictionary, int no_of_lines)
+         public  string Decompress()
         {
 
             string decompressed_text = "";
@@ -418,10 +421,10 @@ namespace xml_read
             for (int i = 0; i < no_of_lines; i++)
             {
                 string str = "";
-                for (int j = 0; j < compress_indexes].Count; j++)
+                for (int j = 0; j < codeIndex[i].Count; j++)
                 {
 
-                    str = str + dictionary[compress_indexes[i][j]];
+                    str = str + dictionary[codeIndex[i][j]];
 
                 }
                 //lines3.Add(str.ToString());
