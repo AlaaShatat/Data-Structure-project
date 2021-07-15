@@ -20,9 +20,11 @@ namespace xml_read
         public TextBox currentError = new TextBox();
         public string errorLine;
         public string correctResult = "";
-        public int no_of_lines;
         public string result = "";
         public int levels = 0; 
+        public int no_of_lines=0;
+        public List<List<int>> codeIndex = new List<List<int>>();
+        public List<string> dictionary =new List<string>();
         // constructor
        public XML (string path_)
         {
@@ -183,7 +185,7 @@ namespace xml_read
                        if (validationStack.Count !=0 && validationStack.Peek().TagValue != "" && lastused[len - 1] != "</")
                        {
                            correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
-                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                           errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
                        } 
                        correctedFile += "<";
                        string tag_name = "";
@@ -254,7 +256,7 @@ namespace xml_read
                        // error correction
                        if (validationStack.Count == 0) 
                        {
-                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                           errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
                        }
                        if (tag_name != validationStack.Peek().TagName)
                        {
@@ -262,7 +264,7 @@ namespace xml_read
                            correctedFile += "</" + validationStack.Peek().TagName + ">" + Environment.NewLine;
                            correctedFile += "</" + tag_name + ">";
                            //Console.WriteLine("Error: Tag not closed at Line "+ lineNumber + "Col." + columnNumber);
-                           errorLine = "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
+                           errorLine += "Error: Tag not closed at Line " + lineNumber + "Col." + columnNumber + Environment.NewLine;
                            //currentError.Text = errorLine;
                        }
                        else
@@ -335,6 +337,128 @@ namespace xml_read
                fs.Write(info, 0, info.Length);
            }
        }
+       
+        // compression 
+       public int IsInTable(string searchList)
+        {
+            int index = dictionary.IndexOf(searchList);
+            return index;
+        }
+
+        public  string Compress()
+        {
+            dictionary.Clear();
+            codeIndex.Clear();
+            List<string> lines = new List<string>();
+            lines = File.ReadAllLines(path).ToList();
+
+            no_of_lines = 0;
+            foreach (string line in lines)
+            {
+                List<int> temp = new List<int>();
+                int i = 0;
+                string c = line[0].ToString();
+                if ((IsInTable(c)) == -1)
+                    dictionary.Add(c);
+
+                string n = line[1].ToString();
+                string cn = c + n;
+
+                while (i < line.Length)
+                {
+                    int copycode = -1;
+                    if (i != 0 && c != cn)
+                    {
+                        c = line[i].ToString();
+                        if ((IsInTable(c)) == -1)
+                            dictionary.Add(c);
+                    }
+                    if (i + 1 != line.Length)
+                    {
+
+                        n = line[i + 1].ToString();
+                        cn = c + n;
+                        if ((copycode = IsInTable(cn)) != -1)
+                            c = cn;
+                        else
+                        {
+                            copycode = IsInTable(c);
+                            temp.Add(copycode);
+                            dictionary.Add(cn);
+                        }
+
+
+                    }
+                    i++;
+                }
+                temp.Add(IsInTable(c));
+
+                no_of_lines++;
+
+                codeIndex.Add(temp);
+                
+            }
+            string After_compression = "";
+            for (int i = 0; i < no_of_lines; i++)
+            {
+                string str = "";
+                for (int j = 0; j < codeIndex[i].Count; j++)
+                {
+                    if (j == (codeIndex[i].Count - 1))
+                    {
+                      
+                        str = str + codeIndex[i][j].ToString();// + ".";
+                    }
+                    else
+                    {
+                        str = str + codeIndex[i][j].ToString();//+ ",";
+                        
+                    }
+
+                }
+
+                After_compression += str;
+                //str = str + Environment.NewLine;
+                //lines2.Add(str);
+
+            }
+
+            return After_compression;
+                
+        }
+      
+         public  string Decompress()
+        {
+
+            string decompressed_text = "";
+            //StreamWriter file = new StreamWriter("aa.txt");
+            //file.Write(ALL);
+            //string filepath3 = @"aa.txt";
+            //file.Close();
+            //List<string> lines3 = File.ReadAllLines(filepath3).ToList();
+            for (int i = 0; i < no_of_lines; i++)
+            {
+                string str = "";
+                for (int j = 0; j < codeIndex[i].Count; j++)
+                {
+
+                    str = str + dictionary[codeIndex[i][j]];
+
+                }
+                //lines3.Add(str.ToString());
+                decompressed_text += str.ToString() + Environment.NewLine;
+            }
+
+            //ALL += decompressed.ToString()+ Environment.NewLine;
+            //File.WriteAllLines(filepath3, lines3);
+            //dictionary.Clear();
+            //file.Write(ALL);
+            //file.Close();
+            return decompressed_text;
+        }
+
+        // print result
+
         public void print ()
         {
             for (int i = 0; i < root_tags.Count(); i++ )
