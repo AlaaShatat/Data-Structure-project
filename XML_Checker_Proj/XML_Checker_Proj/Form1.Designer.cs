@@ -58,7 +58,7 @@
             // 
             // textBox1_XML_Contents
             // 
-            this.textBox1_XML_Contents.BackColor = System.Drawing.Color.Lavender;
+            this.textBox1_XML_Contents.BackColor = System.Drawing.Color.White;
             this.textBox1_XML_Contents.Enabled = false;
             this.textBox1_XML_Contents.Location = new System.Drawing.Point(27, 27);
             this.textBox1_XML_Contents.Margin = new System.Windows.Forms.Padding(2);
@@ -119,7 +119,7 @@
             // 
             // textBox2_XML_Path
             // 
-            this.textBox2_XML_Path.BackColor = System.Drawing.Color.Lavender;
+            this.textBox2_XML_Path.BackColor = System.Drawing.Color.White;
             this.textBox2_XML_Path.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.textBox2_XML_Path.Location = new System.Drawing.Point(969, 27);
             this.textBox2_XML_Path.Margin = new System.Windows.Forms.Padding(2);
@@ -181,7 +181,7 @@
             // 
             // output_txt_box
             // 
-            this.output_txt_box.BackColor = System.Drawing.Color.Lavender;
+            this.output_txt_box.BackColor = System.Drawing.Color.White;
             this.output_txt_box.Enabled = false;
             this.output_txt_box.Location = new System.Drawing.Point(489, 27);
             this.output_txt_box.Margin = new System.Windows.Forms.Padding(2);
@@ -206,12 +206,13 @@
             // 
             // contextMenuStrip1
             // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.Color.Lavender;
+            this.textBox1.BackColor = System.Drawing.Color.White;
             this.textBox1.Enabled = false;
             this.textBox1.Location = new System.Drawing.Point(27, 505);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
@@ -296,7 +297,7 @@
             // 
             // outputFileSave
             // 
-            this.outputFileSave.BackColor = System.Drawing.Color.Lavender;
+            this.outputFileSave.BackColor = System.Drawing.Color.White;
             this.outputFileSave.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.outputFileSave.Location = new System.Drawing.Point(969, 333);
             this.outputFileSave.Margin = new System.Windows.Forms.Padding(2);
@@ -323,7 +324,7 @@
             this.AccessibleName = "";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.BackColor = System.Drawing.Color.LightCyan;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1783, 805);
             this.Controls.Add(this.button2);

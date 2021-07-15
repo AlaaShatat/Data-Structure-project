@@ -147,8 +147,9 @@ namespace XML_Checker_Proj
         //
         private void format_xml_click(object sender, EventArgs e)
         {
-            //string formatted = xml_file.FormatXML();
-            this.output_txt_box.Text = "formatted";
+            xml_file.Parse_XML();
+            string formatted = xml_file.FormatXML();
+            this.output_txt_box.Text = formatted;
 
         }
    
@@ -181,7 +182,11 @@ namespace XML_Checker_Proj
         // jason
         private void button4_Click(object sender, EventArgs e)
         {
+            xml_file.Parse_XML();
             string converted = xml_file.ConvertToJson();
+            this.output_txt_box.Text = converted;
+
+
         }
         // minify file 
         private void button3_Click(object sender, EventArgs e)

@@ -295,14 +295,526 @@ namespace xml_read
            }
            return correctedFile;
        }
-        // jason
-       public string ConvertToJson()
-       {
-         return "result";
+        //format
+        public string FormatXML()
+        {
+            // Format the XML and retun a string with XML formated.
+            String result = "";
+            int levels = 0;
 
-       }
+
+            void formating_childs(Tag mytag)
+            {
+                for (int u = 0; u < levels; u++)
+                    result += "      ";
+                if (levels != 0)
+                    result += "<" + mytag.TagName + " " + mytag.attributes + ">" + Environment.NewLine;
+
+                if (mytag.Childs.Count != 0)
+                {
+                    levels++;
+
+                    for (int j = 0; j < mytag.Childs.Count; j++)
+                    {
+
+                        formating_childs(mytag.Childs[j]);
+                    }
+
+                    levels--;
+                    for (int u = 0; u < levels; u++)
+                        result += "      ";
+
+                    if (levels != 0)
+                        result += "</" + mytag.TagName + ">" + Environment.NewLine;
+
+
+                }
+
+                else if (mytag.TagValue != null)
+                {
+                    string spaces = null;
+                    for (int u = 0; u < levels + 1; u++)
+                    { //result +="      ";
+                        spaces += "      ";
+                    }
+
+                    int position = 0;
+                    string temp = null;
+                    string temp2 = null;
+                    int y = 0;
+                    position = mytag.TagValue.IndexOf(Environment.NewLine);
+                    while (position != -1)
+                    {
+                        if (y == 0)
+                        {
+                            position = mytag.TagValue.IndexOf(Environment.NewLine);
+                            temp = mytag.TagValue.Substring(position + 2);
+                            temp2 = mytag.TagValue.Substring(0, position);
+                        }
+                        if (temp == Environment.NewLine)
+                            result += spaces + mytag.TagValue.Substring(0, position);
+                        else
+                            result += spaces + temp2 + Environment.NewLine;
+
+                        position = temp.IndexOf(Environment.NewLine);
+                        if (position != -1)
+                        {
+                            temp2 = temp.Substring(0, position);
+                            temp = temp.Substring(position + 2);
+                        }
+                        y = 1;
+                    }
+
+                    if (y == 0)
+                        result += spaces + mytag.TagValue + Environment.NewLine;
+
+
+                    for (int u = 0; u < levels; u++)
+                        result += "      ";
+                    if (levels != 0)
+                        result += "</" + mytag.TagName + ">" + Environment.NewLine;
+
+
+                }
+
+
+
+            }
+            for (int jj = 0; jj < root_tags.Count; jj++)
+            {
+                result += "<" + root_tags[jj].TagName + " " + root_tags[jj].attributes + ">" + Environment.NewLine;
+                levels = 0;
+
+                formating_childs(root_tags[jj]);
+
+                result += "</" + root_tags[jj].TagName + ">" + Environment.NewLine;
+            }
+
+
+
+            return result;
+        }
+
+
+        // jason
+        public string ConvertToJson()
+        {
+
+            String result = "{" + Environment.NewLine;
+            int levels = 0;
+            string space = "";
+            //main
+
+
+            for (int j = 0; j < root_tags.Count - 1; j++)
+            {
+                levels = 0;
+                if (root_tags[j].TagName == root_tags[j + 1].TagName)
+                {
+                    root_tags[j].has_sibling += 1;
+                    root_tags[j + 1].has_sibling += 2;
+
+                }
+
+                if (j != 0 && root_tags[j].TagName != root_tags[j + 1].TagName && root_tags[j - 1].has_sibling >= 2)
+                    result += "       " + "]" + Environment.NewLine;
+                print(root_tags[j]);
+
+
+
+            }
+
+            if (root_tags.Count > 2 && root_tags[root_tags.Count - 2].TagName == root_tags[root_tags.Count - 3].TagName && root_tags[root_tags.Count - 1].has_sibling == 0)
+                result += "       " + "]" + Environment.NewLine;
+
+            print(root_tags[root_tags.Count - 1]);
+
+            if (root_tags[root_tags.Count - 1].has_sibling >= 2)
+                result += "       " + "]" + Environment.NewLine;
+
+
+            void print(Tag mytag)
+            {
+                for (int u = 0; u < levels; u++)
+                    space += "     ";
+
+                if (mytag.has_sibling == 1)
+                {
+                    result += space + "\"" + mytag.TagName + "\":[" + Environment.NewLine;
+
+                    if (mytag.attributes != null)
+                    {
+                        int position = mytag.attributes.IndexOf("=");
+                        int position2 = 0;
+                        string temp = mytag.attributes;
+                        string temp2 = null;
+                        while (temp.IndexOf("=") != -1)
+                        {
+                            position = temp.IndexOf("=");
+
+                            result += space + "\"" + temp.Substring(0, position) + "\": ";
+
+                            temp = temp.Substring(position + 1);
+                            position = temp.IndexOf("=");
+
+                            if (position == -1) //last attribute
+                                result += temp.Substring(position + 1) + Environment.NewLine;
+                            else
+                            {
+                                position2 = temp.IndexOf("\"");
+                                temp2 = temp.Substring(position2 + 1); //after first =
+                                position = temp2.IndexOf("\"");
+                                result += space + temp.Substring(position2, position + 2) + "," + Environment.NewLine;
+                                temp = temp2.Substring(position + 1); //take in consder space between attributes
+                            }
+
+                        }
+                        result += ",";
+                    }
+
+                    if (mytag.Childs.Count != 0)
+                    {
+
+                        result += space + "{";
+                        levels++;
+                        for (int j = 0; j < mytag.Childs.Count - 1; j++) //to print childs
+                        {
+
+                            if (mytag.Childs[j].TagName == mytag.Childs[j + 1].TagName)
+                            {
+                                mytag.Childs[j].has_sibling += 1;
+                                mytag.Childs[j + 1].has_sibling += 2;
+                            }
+                            if (j != 0 && mytag.Childs[j].TagName != mytag.Childs[j + 1].TagName && mytag.Childs[j - 1].has_sibling >= 2)
+                            {
+                                result += "       " + "]" + Environment.NewLine;
+                            }
+                            print(mytag.Childs[j]);
+                            if (mytag.Childs.Count != 1)
+                                result += "," + Environment.NewLine;
+
+                        }
+
+                        levels--;
+                        space = null;
+                        for (int u = 0; u < levels; u++)
+                            space += "     ";
+
+                        if (mytag.Childs.Count > 2 && mytag.Childs[mytag.Childs.Count - 2].TagName == mytag.Childs[mytag.Childs.Count - 3].TagName && root_tags[root_tags.Count - 1].has_sibling == 0)
+                            result += "         " + "]" + Environment.NewLine;
+
+                        print(mytag.Childs[mytag.Childs.Count - 1]);
+
+                        if (mytag.Childs[mytag.Childs.Count - 1].has_sibling >= 2)
+                            result += "         " + "]" + Environment.NewLine;
+
+
+                        result += space + "}" + Environment.NewLine;
+
+
+                    }
+
+                    else if (mytag.TagValue != null)
+                    {
+                        result += "\"";
+                        int position = 0;
+                        string temp = null;
+                        string temp2 = null;
+                        int y = 0;
+                        position = mytag.TagValue.IndexOf(Environment.NewLine);
+                        while (position != -1)
+                        {
+                            if (y == 0)
+                            {
+                                position = mytag.TagValue.IndexOf(Environment.NewLine);
+                                temp = mytag.TagValue.Substring(position + 2);
+                                temp2 = mytag.TagValue.Substring(0, position);
+                            }
+                            if (temp == Environment.NewLine)
+                                result += space + mytag.TagValue.Substring(0, position);
+                            else
+                                result += space + temp2 + Environment.NewLine;
+
+                            position = temp.IndexOf(Environment.NewLine);
+                            if (position != -1)
+                            {
+                                temp2 = temp.Substring(0, position);
+                                temp = temp.Substring(position + 2);
+                            }
+                            y = 1;
+                        }
+
+                        if (y == 0)
+                            result += mytag.TagValue;
+
+                        result += "\"" + Environment.NewLine;
+                    }
+
+
+                }
+
+                if (mytag.has_sibling >= 2)
+                {
+                    //   result += "," + Environment.NewLine;
+                    if (mytag.attributes != null)
+                    {
+                        int position = mytag.attributes.IndexOf("=");
+                        int position2 = 0;
+                        string temp = mytag.attributes;
+                        string temp2 = null;
+                        while (temp.IndexOf("=") != -1)
+                        {
+                            position = temp.IndexOf("=");
+
+                            result += space + "\"" + temp.Substring(0, position) + "\": ";
+
+                            temp = temp.Substring(position + 1);
+                            position = temp.IndexOf("=");
+
+                            if (position == -1) //last attribute
+                                result += temp.Substring(position + 1) + Environment.NewLine;
+                            else
+                            {
+                                position2 = temp.IndexOf("\"");
+                                temp2 = temp.Substring(position2 + 1); //after first =
+                                position = temp2.IndexOf("\"");
+                                result += temp.Substring(position2, position + 2) + "," + Environment.NewLine;
+                                temp = temp2.Substring(position + 1); //take in consder space between attributes
+                            }
+
+                        }
+                    }
+
+                    if (mytag.Childs.Count != 0)
+                    {
+                        result += space + "{";
+                        levels++;
+                        for (int j = 0; j < mytag.Childs.Count - 1; j++) //to print childs
+                        {
+
+                            if (mytag.Childs[j].TagName == mytag.Childs[j + 1].TagName)
+                            {
+                                mytag.Childs[j].has_sibling += 1;
+                                mytag.Childs[j + 1].has_sibling += 2;
+                            }
+                            if (j != 0 && mytag.Childs[j].TagName != mytag.Childs[j + 1].TagName && mytag.Childs[j - 1].has_sibling >= 2)
+                                result += space + "]" + Environment.NewLine;
+
+                            print(mytag.Childs[j]);
+                            if (mytag.Childs.Count != 1)
+                                result += "," + Environment.NewLine;
+
+                        }
+                        levels--;
+                        space = null;
+                        for (int u = 0; u < levels; u++)
+                            space += "     ";
+
+                        if (mytag.Childs.Count > 2 && mytag.Childs[mytag.Childs.Count - 2].TagName == mytag.Childs[mytag.Childs.Count - 3].TagName && root_tags[root_tags.Count - 1].has_sibling == 0)
+                            result += space + "]" + Environment.NewLine;
+
+                        print(mytag.Childs[mytag.Childs.Count - 1]);
+
+                        if (mytag.Childs[mytag.Childs.Count - 1].has_sibling >= 2)
+                            result += space + "]" + Environment.NewLine;
+
+
+                        result += space + "}" + Environment.NewLine;
+
+                    }
+
+                    else if (mytag.TagValue != null)
+                    {
+                        result += space + "\"";
+                        int position = 0;
+                        string temp = null;
+                        string temp2 = null;
+                        int y = 0;
+                        position = mytag.TagValue.IndexOf(Environment.NewLine);
+                        while (position != -1)
+                        {
+                            if (y == 0)
+                            {
+                                position = mytag.TagValue.IndexOf(Environment.NewLine);
+                                temp = mytag.TagValue.Substring(position + 2);
+                                temp2 = mytag.TagValue.Substring(0, position);
+                            }
+                            if (temp == Environment.NewLine)
+                                result += space + mytag.TagValue.Substring(0, position);
+                            else
+                                result += space + temp2 + Environment.NewLine;
+
+                            position = temp.IndexOf(Environment.NewLine);
+                            if (position != -1)
+                            {
+                                temp2 = temp.Substring(0, position);
+                                temp = temp.Substring(position + 2);
+                            }
+                            y = 1;
+                        }
+
+                        if (y == 0)
+                            result += mytag.TagValue;
+
+                        result += "\"" + Environment.NewLine;
+                    }
+
+                }
+                if (mytag.has_sibling == 0)
+                {
+                    if (mytag.attributes != null && mytag.Childs.Count != 0)
+                    {
+                        int position = mytag.attributes.IndexOf("=");
+                        int position2 = 0;
+                        string temp = mytag.attributes;
+                        string temp2 = null;
+                        while (temp.IndexOf("=") != -1)
+                        {
+                            position = temp.IndexOf("=");
+
+                            result += space + "\"" + temp.Substring(0, position) + "\": ";
+
+                            temp = temp.Substring(position + 1);
+                            position = temp.IndexOf("=");
+
+                            if (position == -1) //last attribute
+                                result += temp.Substring(position + 1) + Environment.NewLine;
+                            else
+                            {
+                                position2 = temp.IndexOf("\"");
+                                temp2 = temp.Substring(position2 + 1); //after first =
+                                position = temp2.IndexOf("\"");
+                                result += temp.Substring(position2, position + 2) + "," + Environment.NewLine;
+                                temp = temp2.Substring(position + 1); //take in consder space between attributes
+                            }
+
+                        }
+                    }
+                    if (mytag.Childs.Count != 0)
+                    {
+                        result += space + "\"" + mytag.TagName + "\":{" + Environment.NewLine;
+                        for (int j = 0; j < mytag.Childs.Count - 1; j++) //to print childs
+                        {
+                            levels++;
+                            if (mytag.Childs[j].TagName == mytag.Childs[j + 1].TagName)
+                            {
+                                mytag.Childs[j].has_sibling = 1;
+                                mytag.Childs[j + 1].has_sibling = 2;
+                            }
+                            if (j != 0 && mytag.Childs[j].TagName != mytag.Childs[j + 1].TagName && mytag.Childs[j - 1].has_sibling >= 2)
+                                result += space + "]" + Environment.NewLine;
+
+                            print(mytag.Childs[j]);
+                            if (mytag.Childs.Count != 1)
+                                result += "," + Environment.NewLine;
+
+                        }
+                        levels--;
+                        space = null;
+                        for (int u = 0; u < levels; u++)
+                            space += "    ";
+
+                        if (mytag.Childs.Count > 2 && mytag.Childs[mytag.Childs.Count - 2].TagName == mytag.Childs[mytag.Childs.Count - 3].TagName && root_tags[root_tags.Count - 1].has_sibling == 0)
+                            result += space + "]" + Environment.NewLine;
+
+                        print(mytag.Childs[mytag.Childs.Count - 1]);
+
+                        if (mytag.Childs[mytag.Childs.Count - 1].has_sibling >= 2)
+                            result += space + "]" + Environment.NewLine;
+
+
+                        result += space + "}" + Environment.NewLine;
+
+                    }
+
+                    else if (mytag.TagValue != null)
+                    {
+                        result += space + "\"" + mytag.TagName + "\":";
+                        if (mytag.attributes != null)
+                        {
+                            int position = mytag.attributes.IndexOf("=");
+                            int position2 = 0;
+                            string temp = mytag.attributes;
+                            string temp2 = null;
+                            while (temp.IndexOf("=") != -1)
+                            {
+                                position = temp.IndexOf("=");
+
+                                result += space + "\"" + temp.Substring(0, position) + "\": ";
+
+                                temp = temp.Substring(position + 1);
+                                position = temp.IndexOf("=");
+
+                                if (position == -1) //last attribute
+                                    result += temp.Substring(position + 1) + Environment.NewLine;
+                                else
+                                {
+                                    position2 = temp.IndexOf("\"");
+                                    temp2 = temp.Substring(position2 + 1); //after first =
+                                    position = temp2.IndexOf("\"");
+                                    result += temp.Substring(position2, position + 2) + "," + Environment.NewLine;
+                                    temp = temp2.Substring(position + 1); //take in consder space between attributes
+                                }
+
+                            }
+                        }
+
+
+
+
+                        result += space + "\"";
+                        int position3 = 0;
+                        string temp3 = null;
+                        string temp4 = null;
+                        int z = 0;
+                        position3 = mytag.TagValue.IndexOf(Environment.NewLine);
+                        while (position3 != -1)
+                        {
+                            if (z == 0)
+                            {
+                                position3 = mytag.TagValue.IndexOf(Environment.NewLine);
+                                temp3 = mytag.TagValue.Substring(position3 + 2);
+                                temp4 = mytag.TagValue.Substring(0, position3);
+                            }
+                            if (temp3 == Environment.NewLine)
+                                result += space + temp4;
+                            else
+                                result += space + temp4 + Environment.NewLine;
+
+                            position3 = temp3.IndexOf(Environment.NewLine);
+                            if (position3 != -1)
+                            {
+                                temp4 = temp3.Substring(0, position3);
+                                temp3 = temp3.Substring(position3 + 2);
+                            }
+                            z = 1;
+                        }
+
+                        if (z == 0)
+                            result += mytag.TagValue;
+
+                        result += "\"" + Environment.NewLine;
+                    }
+
+
+
+                }
+
+            }
+
+
+
+
+
+
+            result += Environment.NewLine + "}";
+
+            return result;
+        }
+
+
         //trim
-       public string Trim()
+        public string Trim()
        {
            // Pt5 remove the sapacs and the new lines from the xml and retrun a string with no new line or space.
            string XmlDoc = File.ReadAllText(path);
